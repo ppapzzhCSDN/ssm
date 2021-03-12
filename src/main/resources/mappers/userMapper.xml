@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.zzh.dao.UserDao">
+
+    <select id="getUserById" parameterType="Integer" resultType="com.zzh.entity.User">
+        select id,name,age,sex,create_time from user where id=#{id}
+    </select>
+
+    <select id="listAll" resultType="com.zzh.entity.User">
+        select id,name,password,age,sex,create_time from user
+        where 1=1
+        <if test="name!=null and name!=''">
+            and name like concat('%',#{name},'%')
+        </if>
+        <if test="sex!=null and sex!='-1' and sex!=''">
+            and sex=#{sex}
+        </if>
+    limit #{index},#{pageSize}
+    </select>
+    <select id="getCount" resultType="int">
+        select count(*) from user
+        where 1=1
+        <if test="name!=null and name !=''">
+            and name like concat('%',#{name},'%')
+        </if>
+
+        <if test="sex!='-1' and sex!=null and  sex !='' ">
+            and sex=#{sex}
+        </if>
+    </select>
+
+    <insert id="add" parameterType="User">
+        insert into user(name,password,age,sex,create_time) values (#{name},#{password},#{age},#{sex},#{createTime})
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        delete from user where id=#{id}
+    </delete>
+
+    <update id="update" parameterType="User">
+        update user set name=#{name},age=#{age},sex=#{sex} where id=#{id}
+    </update>
+
+    <select id="toUpdate" resultType="User">
+        select id,name,age,sex,create_time from user where id=#{id}
+    </select>
+<!--//返回类型user要指定 但是返回对象不明确 所指定不了-->
+    <select id="checkUsernamePs" resultType="User">
+        select * from user where name =#{name} and password = #{password}
+    </select>
+</mapper>
